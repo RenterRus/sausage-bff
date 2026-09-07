@@ -9,23 +9,12 @@ import (
 )
 
 type Server struct {
-	Host   string `validate:"required"`
-	Port   int    `validate:"required"`
-	Enable bool   `validate:"required"`
-}
-
-type DB struct {
-	Provider string `validate:"required"`
-	Username string `validate:"required"`
-	Password string `validate:"required"`
-	Host     string `validate:"required"`
-	Port     int    `validate:"required"`
-	DBName   string `validate:"required"`
+	Host string `validate:"required"`
+	Port int    `validate:"required"`
 }
 
 type Config struct {
-	GRPC Server `validate:"required"`
-	PSQL DB     `validate:"required"`
+	Server Server `validate:"required"`
 }
 
 func ReadConfig(path string, fileName string) (*Config, error) {
