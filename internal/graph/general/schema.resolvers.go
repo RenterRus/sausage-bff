@@ -1,4 +1,4 @@
-package general
+package graph
 
 // This file will be automatically regenerated based on the schema, any resolver
 // implementations
@@ -15,7 +15,9 @@ import (
 
 // CreateTodo is the resolver for the CreateTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - CreateTodo"))
+	return &model.Todo{
+		Text: input.Text,
+	}, nil
 }
 
 // Todos is the resolver for the todos field.

@@ -202,7 +202,7 @@ func newExecutionContext(
 }
 
 var sources = []*ast.Source{
-	{Name: "../../../../docs/graph/schema.graphqls", Input: `type Todo {
+	{Name: "../../../../docs/graph/schema.graphql", Input: `type Todo {
   id: ID!
   text: String!
   done: Boolean!
