@@ -37,17 +37,33 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CreateTodo func(childComplexity int, input model.NewTodo) int
+		DeleteTaskByUser  func(childComplexity int, userID string, transactionUUID *string) int
+		SetCompleteStatus func(childComplexity int, userID string, complete *bool, transactionUUID *string) int
+		UpsertTask        func(childComplexity int, input model.UpsertTaskInput) int
+	}
+
+	Profile struct {
+		Login func(childComplexity int) int
 	}
 
 	Query struct {
-		Todos func(childComplexity int) int
+		GetProfile        func(childComplexity int) int
+		SelectTasksByUser func(childComplexity int, userID string) int
 	}
 
-	Todo struct {
-		Done func(childComplexity int) int
-		ID   func(childComplexity int) int
-		Text func(childComplexity int) int
+	Task struct {
+		Comment         func(childComplexity int) int
+		Complete        func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		Priority        func(childComplexity int) int
+		StartDate       func(childComplexity int) int
+		Title           func(childComplexity int) int
+		TransactionUUID func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+	}
+
+	TaskOperationResult struct {
+		Status func(childComplexity int) int
 	}
 }
 
@@ -56,10 +72,13 @@ type ComplexityRoot struct {
 // region    ************************** generated!.gotpl **************************
 
 type MutationResolver interface {
-	CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error)
+	UpsertTask(ctx context.Context, input model.UpsertTaskInput) (*model.TaskOperationResult, error)
+	DeleteTaskByUser(ctx context.Context, userID string, transactionUUID *string) (*model.TaskOperationResult, error)
+	SetCompleteStatus(ctx context.Context, userID string, complete *bool, transactionUUID *string) (*model.TaskOperationResult, error)
 }
 type QueryResolver interface {
-	Todos(ctx context.Context) ([]*model.Todo, error)
+	SelectTasksByUser(ctx context.Context, userID string) ([]*model.Task, error)
+	GetProfile(ctx context.Context) (*model.Profile, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -80,43 +99,121 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Mutation.CreateTodo":
-		if e.ComplexityRoot.Mutation.CreateTodo == nil {
+	case "Mutation.deleteTaskByUser":
+		if e.ComplexityRoot.Mutation.DeleteTaskByUser == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_CreateTodo_args(ctx, rawArgs)
+		args, err := ec.field_Mutation_deleteTaskByUser_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.CreateTodo(childComplexity, args["input"].(model.NewTodo)), true
-
-	case "Query.todos":
-		if e.ComplexityRoot.Query.Todos == nil {
+		return e.ComplexityRoot.Mutation.DeleteTaskByUser(childComplexity, args["userId"].(string), args["transactionUuid"].(*string)), true
+	case "Mutation.setCompleteStatus":
+		if e.ComplexityRoot.Mutation.SetCompleteStatus == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Query.Todos(childComplexity), true
+		args, err := ec.field_Mutation_setCompleteStatus_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
 
-	case "Todo.done":
-		if e.ComplexityRoot.Todo.Done == nil {
+		return e.ComplexityRoot.Mutation.SetCompleteStatus(childComplexity, args["userId"].(string), args["complete"].(*bool), args["transactionUuid"].(*string)), true
+	case "Mutation.upsertTask":
+		if e.ComplexityRoot.Mutation.UpsertTask == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Todo.Done(childComplexity), true
-	case "Todo.id":
-		if e.ComplexityRoot.Todo.ID == nil {
+		args, err := ec.field_Mutation_upsertTask_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Mutation.UpsertTask(childComplexity, args["input"].(model.UpsertTaskInput)), true
+
+	case "Profile.login":
+		if e.ComplexityRoot.Profile.Login == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Todo.ID(childComplexity), true
-	case "Todo.text":
-		if e.ComplexityRoot.Todo.Text == nil {
+		return e.ComplexityRoot.Profile.Login(childComplexity), true
+
+	case "Query.getProfile":
+		if e.ComplexityRoot.Query.GetProfile == nil {
 			break
 		}
 
-		return e.ComplexityRoot.Todo.Text(childComplexity), true
+		return e.ComplexityRoot.Query.GetProfile(childComplexity), true
+
+	case "Query.selectTasksByUser":
+		if e.ComplexityRoot.Query.SelectTasksByUser == nil {
+			break
+		}
+
+		args, err := ec.field_Query_selectTasksByUser_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Query.SelectTasksByUser(childComplexity, args["userId"].(string)), true
+
+	case "Task.comment":
+		if e.ComplexityRoot.Task.Comment == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.Comment(childComplexity), true
+	case "Task.complete":
+		if e.ComplexityRoot.Task.Complete == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.Complete(childComplexity), true
+	case "Task.createdAt":
+		if e.ComplexityRoot.Task.CreatedAt == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.CreatedAt(childComplexity), true
+	case "Task.priority":
+		if e.ComplexityRoot.Task.Priority == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.Priority(childComplexity), true
+	case "Task.startDate":
+		if e.ComplexityRoot.Task.StartDate == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.StartDate(childComplexity), true
+	case "Task.title":
+		if e.ComplexityRoot.Task.Title == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.Title(childComplexity), true
+	case "Task.transactionUuid":
+		if e.ComplexityRoot.Task.TransactionUUID == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.TransactionUUID(childComplexity), true
+	case "Task.updatedAt":
+		if e.ComplexityRoot.Task.UpdatedAt == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Task.UpdatedAt(childComplexity), true
+
+	case "TaskOperationResult.status":
+		if e.ComplexityRoot.TaskOperationResult.Status == nil {
+			break
+		}
+
+		return e.ComplexityRoot.TaskOperationResult.Status(childComplexity), true
 
 	}
 	return 0, false
@@ -126,7 +223,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := newExecutionContext(opCtx, e, make(chan graphql.DeferredResult))
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputNewTodo,
+		ec.unmarshalInputUpsertTaskInput,
 	)
 	first := true
 
@@ -202,23 +299,65 @@ func newExecutionContext(
 }
 
 var sources = []*ast.Source{
-	{Name: "../../../../docs/graph/schema.graphql", Input: `type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
+	{Name: "../../../../docs/graph/schema.graphql", Input: `# ═══════════════════════════════════════════════════════════
+# Типы данных (модели)
+# ═══════════════════════════════════════════════════════════
+
+type Profile {
+  login: String
 }
+
+type Task {
+  transactionUuid: String
+  title:           String!
+  comment:         String
+  priority:        Int!
+  startDate:       DateTime
+  complete:        Boolean!
+  createdAt:       DateTime!
+  updatedAt:       DateTime!
+}
+
+# Универсальный тип ответа, повторяющий структуру proto-сообщений { status: string }
+type TaskOperationResult {
+  status: String!
+}
+
+input UpsertTaskInput {
+  transactionUuid: String
+  title:           String!
+  comment:         String
+  priority:        Int!
+  startDate:       DateTime
+  complete:        Boolean!
+}
+
+# ═══════════════════════════════════════════════════════════
+# Схемы (Query / Mutation)
+# ═══════════════════════════════════════════════════════════
 
 type Query {
-  todos: [Todo!]!
-}
-
-input NewTodo {
-  text: String!
+  # rpc SelectTasksByUser(SelectTasksRequest) returns (SelectTasksResponse);
+  selectTasksByUser(userId: String!): [Task!]!
+  getProfile: Profile!
 }
 
 type Mutation {
-  CreateTodo(input: NewTodo!): Todo!
-}`, BuiltIn: false},
+  # rpc UpsertTask(UpsertTaskRequest) returns (UpsertTaskResponse);
+  upsertTask(input: UpsertTaskInput!): TaskOperationResult!
+
+  # rpc DeleteTaskByUser(DeleteTaskRequest) returns (DeleteTaskResponse);
+  deleteTaskByUser(userId: String!, transactionUuid: String): TaskOperationResult!
+
+  # rpc SetCompleteStatus(SetCompleteStatusRequest) returns (SetCompleteStatusResponse);
+  setCompleteStatus(userId: String!, complete: Boolean, transactionUuid: String): TaskOperationResult!
+}
+
+# Примечание по скалярам:
+# DateTime должен быть реализован на бэкенде как Scalar (например, через Apollo/Graphene), 
+# мапящийся на ISO-8601 строку или timestamp int.
+scalar DateTime
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -226,16 +365,42 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // Each function is generated once per unique object type, deduplicating the
 // switch statements that were previously inlined in every fieldContext_* function.
 
-func (ec *executionContext) childFields_Todo(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+func (ec *executionContext) childFields_Profile(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 	switch field.Name {
-	case "id":
-		return ec.fieldContext_Todo_id(ctx, field)
-	case "text":
-		return ec.fieldContext_Todo_text(ctx, field)
-	case "done":
-		return ec.fieldContext_Todo_done(ctx, field)
+	case "login":
+		return ec.fieldContext_Profile_login(ctx, field)
 	}
-	return nil, fmt.Errorf("no field named %q was found under type Todo", field.Name)
+	return nil, fmt.Errorf("no field named %q was found under type Profile", field.Name)
+}
+
+func (ec *executionContext) childFields_Task(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "transactionUuid":
+		return ec.fieldContext_Task_transactionUuid(ctx, field)
+	case "title":
+		return ec.fieldContext_Task_title(ctx, field)
+	case "comment":
+		return ec.fieldContext_Task_comment(ctx, field)
+	case "priority":
+		return ec.fieldContext_Task_priority(ctx, field)
+	case "startDate":
+		return ec.fieldContext_Task_startDate(ctx, field)
+	case "complete":
+		return ec.fieldContext_Task_complete(ctx, field)
+	case "createdAt":
+		return ec.fieldContext_Task_createdAt(ctx, field)
+	case "updatedAt":
+		return ec.fieldContext_Task_updatedAt(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+}
+
+func (ec *executionContext) childFields_TaskOperationResult(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+	switch field.Name {
+	case "status":
+		return ec.fieldContext_TaskOperationResult_status(ctx, field)
+	}
+	return nil, fmt.Errorf("no field named %q was found under type TaskOperationResult", field.Name)
 }
 
 func (ec *executionContext) childFields___Directive(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
@@ -354,12 +519,64 @@ func (ec *executionContext) childFields___Type(ctx context.Context, field graphq
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_CreateTodo_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deleteTaskByUser_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "userId",
+		func(ctx context.Context, v any) (string, error) {
+			return ec.unmarshalNString2string(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["userId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "transactionUuid",
+		func(ctx context.Context, v any) (*string, error) {
+			return ec.unmarshalOString2ᚖstring(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["transactionUuid"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_setCompleteStatus_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "userId",
+		func(ctx context.Context, v any) (string, error) {
+			return ec.unmarshalNString2string(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["userId"] = arg0
+	arg1, err := graphql.ProcessArgField(ctx, rawArgs, "complete",
+		func(ctx context.Context, v any) (*bool, error) {
+			return ec.unmarshalOBoolean2ᚖbool(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["complete"] = arg1
+	arg2, err := graphql.ProcessArgField(ctx, rawArgs, "transactionUuid",
+		func(ctx context.Context, v any) (*string, error) {
+			return ec.unmarshalOString2ᚖstring(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["transactionUuid"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_upsertTask_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
-		func(ctx context.Context, v any) (model.NewTodo, error) {
-			return ec.unmarshalNNewTodo2githubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐNewTodo(ctx, v)
+		func(ctx context.Context, v any) (model.UpsertTaskInput, error) {
+			return ec.unmarshalNUpsertTaskInput2githubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐUpsertTaskInput(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -379,6 +596,20 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_selectTasksByUser_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "userId",
+		func(ctx context.Context, v any) (string, error) {
+			return ec.unmarshalNString2string(ctx, v)
+		})
+	if err != nil {
+		return nil, err
+	}
+	args["userId"] = arg0
 	return args, nil
 }
 
@@ -442,34 +673,34 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Mutation_CreateTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_upsertTask(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
 		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Mutation_CreateTodo(ctx, field)
+			return ec.fieldContext_Mutation_upsertTask(ctx, field)
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().CreateTodo(ctx, fc.Args["input"].(model.NewTodo))
+			return ec.Resolvers.Mutation().UpsertTask(ctx, fc.Args["input"].(model.UpsertTaskInput))
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v *model.Todo) graphql.Marshaler {
-			return ec.marshalNTodo2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTodo(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v *model.TaskOperationResult) graphql.Marshaler {
+			return ec.marshalNTaskOperationResult2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTaskOperationResult(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
-func (ec *executionContext) fieldContext_Mutation_CreateTodo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_upsertTask(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.childFields_Todo(ctx, field)
+			return ec.childFields_TaskOperationResult(ctx, field)
 		},
 	}
 	defer func() {
@@ -479,40 +710,195 @@ func (ec *executionContext) fieldContext_Mutation_CreateTodo(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_CreateTodo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_upsertTask_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_todos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteTaskByUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
 		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Query_todos(ctx, field)
+			return ec.fieldContext_Mutation_deleteTaskByUser(ctx, field)
 		},
 		func(ctx context.Context) (any, error) {
-			return ec.Resolvers.Query().Todos(ctx)
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Mutation().DeleteTaskByUser(ctx, fc.Args["userId"].(string), fc.Args["transactionUuid"].(*string))
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v []*model.Todo) graphql.Marshaler {
-			return ec.marshalNTodo2ᚕᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTodoᚄ(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v *model.TaskOperationResult) graphql.Marshaler {
+			return ec.marshalNTaskOperationResult2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTaskOperationResult(ctx, selections, v)
 		},
 		true,
 		true,
 	)
 }
-func (ec *executionContext) fieldContext_Query_todos(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_deleteTaskByUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_TaskOperationResult(ctx, field)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteTaskByUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_setCompleteStatus(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Mutation_setCompleteStatus(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Mutation().SetCompleteStatus(ctx, fc.Args["userId"].(string), fc.Args["complete"].(*bool), fc.Args["transactionUuid"].(*string))
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *model.TaskOperationResult) graphql.Marshaler {
+			return ec.marshalNTaskOperationResult2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTaskOperationResult(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Mutation_setCompleteStatus(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_TaskOperationResult(ctx, field)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_setCompleteStatus_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Profile_login(ctx context.Context, field graphql.CollectedField, obj *model.Profile) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Profile_login(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Login, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Profile_login(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Profile", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _Query_selectTasksByUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Query_selectTasksByUser(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Query().SelectTasksByUser(ctx, fc.Args["userId"].(string))
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v []*model.Task) graphql.Marshaler {
+			return ec.marshalNTask2ᚕᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTaskᚄ(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Query_selectTasksByUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.childFields_Todo(ctx, field)
+			return ec.childFields_Task(ctx, field)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_selectTasksByUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Query_getProfile(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return ec.Resolvers.Query().GetProfile(ctx)
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *model.Profile) graphql.Marshaler {
+			return ec.marshalNProfile2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐProfile(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Query_getProfile(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_Profile(ctx, field)
 		},
 	}
 	return fc, nil
@@ -594,39 +980,39 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Todo_id(ctx context.Context, field graphql.CollectedField, obj *model.Todo) (ret graphql.Marshaler) {
+func (ec *executionContext) _Task_transactionUuid(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
 		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Todo_id(ctx, field)
+			return ec.fieldContext_Task_transactionUuid(ctx, field)
 		},
 		func(ctx context.Context) (any, error) {
-			return obj.ID, nil
+			return obj.TransactionUUID, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNID2string(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
 		},
 		true,
-		true,
+		false,
 	)
 }
-func (ec *executionContext) fieldContext_Todo_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Todo", field, false, false, errors.New("field of type ID does not have child fields"))
+func (ec *executionContext) fieldContext_Task_transactionUuid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Todo_text(ctx context.Context, field graphql.CollectedField, obj *model.Todo) (ret graphql.Marshaler) {
+func (ec *executionContext) _Task_title(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
 		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Todo_text(ctx, field)
+			return ec.fieldContext_Task_title(ctx, field)
 		},
 		func(ctx context.Context) (any, error) {
-			return obj.Text, nil
+			return obj.Title, nil
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
@@ -636,20 +1022,89 @@ func (ec *executionContext) _Todo_text(ctx context.Context, field graphql.Collec
 		true,
 	)
 }
-func (ec *executionContext) fieldContext_Todo_text(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Todo", field, false, false, errors.New("field of type String does not have child fields"))
+func (ec *executionContext) fieldContext_Task_title(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Todo_done(ctx context.Context, field graphql.CollectedField, obj *model.Todo) (ret graphql.Marshaler) {
+func (ec *executionContext) _Task_comment(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
 		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Todo_done(ctx, field)
+			return ec.fieldContext_Task_comment(ctx, field)
 		},
 		func(ctx context.Context) (any, error) {
-			return obj.Done, nil
+			return obj.Comment, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalOString2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Task_comment(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _Task_priority(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Task_priority(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Priority, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int32) graphql.Marshaler {
+			return ec.marshalNInt2int32(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Task_priority(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
+func (ec *executionContext) _Task_startDate(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Task_startDate(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.StartDate, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *string) graphql.Marshaler {
+			return ec.marshalODateTime2ᚖstring(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Task_startDate(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type DateTime does not have child fields"))
+}
+
+func (ec *executionContext) _Task_complete(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Task_complete(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Complete, nil
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v bool) graphql.Marshaler {
@@ -659,8 +1114,77 @@ func (ec *executionContext) _Todo_done(ctx context.Context, field graphql.Collec
 		true,
 	)
 }
-func (ec *executionContext) fieldContext_Todo_done(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Todo", field, false, false, errors.New("field of type Boolean does not have child fields"))
+func (ec *executionContext) fieldContext_Task_complete(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type Boolean does not have child fields"))
+}
+
+func (ec *executionContext) _Task_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Task_createdAt(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.CreatedAt, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNDateTime2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Task_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type DateTime does not have child fields"))
+}
+
+func (ec *executionContext) _Task_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Task_updatedAt(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.UpdatedAt, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNDateTime2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Task_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Task", field, false, false, errors.New("field of type DateTime does not have child fields"))
+}
+
+func (ec *executionContext) _TaskOperationResult_status(ctx context.Context, field graphql.CollectedField, obj *model.TaskOperationResult) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_TaskOperationResult_status(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Status, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNString2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_TaskOperationResult_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("TaskOperationResult", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -1722,8 +2246,8 @@ func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputNewTodo(ctx context.Context, obj any) (model.NewTodo, error) {
-	var it model.NewTodo
+func (ec *executionContext) unmarshalInputUpsertTaskInput(ctx context.Context, obj any) (model.UpsertTaskInput, error) {
+	var it model.UpsertTaskInput
 	if obj == nil {
 		return it, nil
 	}
@@ -1733,20 +2257,55 @@ func (ec *executionContext) unmarshalInputNewTodo(ctx context.Context, obj any) 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"text"}
+	fieldsInOrder := [...]string{"transactionUuid", "title", "comment", "priority", "startDate", "complete"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "text":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
+		case "transactionUuid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("transactionUuid"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TransactionUUID = data
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Text = data
+			it.Title = data
+		case "comment":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comment"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Comment = data
+		case "priority":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("priority"))
+			data, err := ec.unmarshalNInt2int32(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Priority = data
+		case "startDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startDate"))
+			data, err := ec.unmarshalODateTime2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StartDate = data
+		case "complete":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("complete"))
+			data, err := ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Complete = data
 		}
 	}
 	return it, nil
@@ -1780,11 +2339,63 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "CreateTodo":
+		case "upsertTask":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_CreateTodo(ctx, field)
+				return ec._Mutation_upsertTask(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteTaskByUser":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteTaskByUser(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "setCompleteStatus":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_setCompleteStatus(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferLabelToView), math.MaxInt32)))
+
+	ec.ProcessDeferredGroup(graphql.DeferredGroup{
+		Defers:   deferLabelToView,
+		Path:     graphql.GetPath(ctx),
+		FieldSet: deferredFieldSet,
+		Context:  ctx,
+	})
+
+	return out
+}
+
+var profileImplementors = []string{"Profile"}
+
+func (ec *executionContext) _Profile(ctx context.Context, sel ast.SelectionSet, obj *model.Profile) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, profileImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferredFieldSet := graphql.NewFieldSet(nil)
+	deferLabelToView := make(map[string]*graphql.FieldSetView)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Profile")
+		case "login":
+			out.Values[i] = ec._Profile_login(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
 				out.Invalids++
 			}
 		default:
@@ -1828,7 +2439,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "todos":
+		case "selectTasksByUser":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -1837,7 +2448,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_todos(ctx, field)
+				res = ec._Query_selectTasksByUser(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getProfile":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getProfile(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -1885,10 +2518,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
-var todoImplementors = []string{"Todo"}
+var taskImplementors = []string{"Task"}
 
-func (ec *executionContext) _Todo(ctx context.Context, sel ast.SelectionSet, obj *model.Todo) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, todoImplementors)
+func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj *model.Task) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, taskImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferredFieldSet := graphql.NewFieldSet(nil)
@@ -1896,19 +2529,82 @@ func (ec *executionContext) _Todo(ctx context.Context, sel ast.SelectionSet, obj
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Todo")
-		case "id":
-			out.Values[i] = ec._Todo_id(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("Task")
+		case "transactionUuid":
+			out.Values[i] = ec._Task_transactionUuid(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "title":
+			out.Values[i] = ec._Task_title(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "text":
-			out.Values[i] = ec._Todo_text(ctx, field, obj)
+		case "comment":
+			out.Values[i] = ec._Task_comment(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "priority":
+			out.Values[i] = ec._Task_priority(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "done":
-			out.Values[i] = ec._Todo_done(ctx, field, obj)
+		case "startDate":
+			out.Values[i] = ec._Task_startDate(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
+				out.Invalids++
+			}
+		case "complete":
+			out.Values[i] = ec._Task_complete(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._Task_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._Task_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(min(len(deferLabelToView), math.MaxInt32)))
+
+	ec.ProcessDeferredGroup(graphql.DeferredGroup{
+		Defers:   deferLabelToView,
+		Path:     graphql.GetPath(ctx),
+		FieldSet: deferredFieldSet,
+		Context:  ctx,
+	})
+
+	return out
+}
+
+var taskOperationResultImplementors = []string{"TaskOperationResult"}
+
+func (ec *executionContext) _TaskOperationResult(ctx context.Context, sel ast.SelectionSet, obj *model.TaskOperationResult) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, taskOperationResultImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferredFieldSet := graphql.NewFieldSet(nil)
+	deferLabelToView := make(map[string]*graphql.FieldSetView)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TaskOperationResult")
+		case "status":
+			out.Values[i] = ec._TaskOperationResult_status(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2341,14 +3037,14 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
-	res, err := graphql.UnmarshalID(v)
+func (ec *executionContext) unmarshalNDateTime2string(ctx context.Context, v any) (string, error) {
+	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+func (ec *executionContext) marshalNDateTime2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	_ = sel
-	res := graphql.MarshalID(v)
+	res := graphql.MarshalString(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
@@ -2357,9 +3053,30 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewTodo2githubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐNewTodo(ctx context.Context, v any) (model.NewTodo, error) {
-	res, err := ec.unmarshalInputNewTodo(ctx, v)
+func (ec *executionContext) unmarshalNInt2int32(ctx context.Context, v any) (int32, error) {
+	res, err := graphql.UnmarshalInt32(v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalInt32(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) marshalNProfile2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐProfile(ctx context.Context, sel ast.SelectionSet, v *model.Profile) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Profile(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
@@ -2378,11 +3095,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTodoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Todo) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNTodo2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTodo(ctx, sel, v[i])
+		return ec.marshalNTask2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTask(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -2394,14 +3111,29 @@ func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋRenterRusᚋsausag
 	return ret
 }
 
-func (ec *executionContext) marshalNTodo2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v *model.Todo) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
-	return ec._Todo(ctx, sel, v)
+	return ec._Task(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTaskOperationResult2ᚖgithubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐTaskOperationResult(ctx context.Context, sel ast.SelectionSet, v *model.TaskOperationResult) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._TaskOperationResult(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNUpsertTaskInput2githubᚗcomᚋRenterRusᚋsausageᚑbffᚋinternalᚋgraphᚋgeneralᚋmodelᚐUpsertTaskInput(ctx context.Context, v any) (model.UpsertTaskInput, error) {
+	res, err := ec.unmarshalInputUpsertTaskInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -2571,6 +3303,24 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	_ = sel
 	_ = ctx
 	res := graphql.MarshalBoolean(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalODateTime2ᚖstring(ctx context.Context, v any) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalString(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalODateTime2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	_ = sel
+	_ = ctx
+	res := graphql.MarshalString(*v)
 	return res
 }
 

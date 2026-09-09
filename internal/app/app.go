@@ -13,11 +13,15 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	general "github.com/RenterRus/sausage-bff/internal/graph/general"
 	"github.com/RenterRus/sausage-bff/internal/graph/general/generated"
+	tasks "github.com/RenterRus/sausage-tasks/docs/proto/v1"
 	"github.com/vektah/gqlparser/v2/ast"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type App struct {
-	conf *Config
+	conf      *Config
+	tasksConn *grpc.ClientConn
 }
 
 func NewApp(configPath string) (*App, error) {
@@ -46,6 +50,16 @@ func (a *App) Run() error {
 		port = defaultPort
 	}
 
+	var err error
+
+	if a.tasksConn, err = grpc.NewClient(fmt.Sprintf("%s:%d", a.conf.Services.Tasks.Host, a.conf.Services.Tasks.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+		return fmt.Errorf("tasksConn: %v", err)
+	}
+
+	tasksClient := tasks.NewTaskClient(a.tasksConn)
+	_ = tasksClient
+
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &general.Resolver{}}))
 
 	srv.AddTransport(transport.Options{})
@@ -69,4 +83,5 @@ func (a *App) Run() error {
 }
 
 func (a *App) Close() {
+	a.tasksConn.Close()
 }

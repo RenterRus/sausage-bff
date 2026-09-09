@@ -13,16 +13,29 @@ import (
 	"github.com/RenterRus/sausage-bff/internal/graph/general/model"
 )
 
-// CreateTodo is the resolver for the CreateTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	return &model.Todo{
-		Text: input.Text,
-	}, nil
+// UpsertTask is the resolver for the upsertTask field.
+func (r *mutationResolver) UpsertTask(ctx context.Context, input model.UpsertTaskInput) (*model.TaskOperationResult, error) {
+	panic(fmt.Errorf("not implemented: UpsertTask - upsertTask"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// DeleteTaskByUser is the resolver for the deleteTaskByUser field.
+func (r *mutationResolver) DeleteTaskByUser(ctx context.Context, userID string, transactionUUID *string) (*model.TaskOperationResult, error) {
+	panic(fmt.Errorf("not implemented: DeleteTaskByUser - deleteTaskByUser"))
+}
+
+// SetCompleteStatus is the resolver for the setCompleteStatus field.
+func (r *mutationResolver) SetCompleteStatus(ctx context.Context, userID string, complete *bool, transactionUUID *string) (*model.TaskOperationResult, error) {
+	panic(fmt.Errorf("not implemented: SetCompleteStatus - setCompleteStatus"))
+}
+
+// SelectTasksByUser is the resolver for the selectTasksByUser field.
+func (r *queryResolver) SelectTasksByUser(ctx context.Context, userID string) ([]*model.Task, error) {
+	panic(fmt.Errorf("not implemented: SelectTasksByUser - selectTasksByUser"))
+}
+
+// GetProfile is the resolver for the getProfile field.
+func (r *queryResolver) GetProfile(ctx context.Context) (*model.Profile, error) {
+	panic(fmt.Errorf("not implemented: GetProfile - getProfile"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

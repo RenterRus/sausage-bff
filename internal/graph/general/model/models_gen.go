@@ -5,15 +5,33 @@ package model
 type Mutation struct {
 }
 
-type NewTodo struct {
-	Text string `json:"text"`
+type Profile struct {
+	Login *string `json:"login,omitempty"`
 }
 
 type Query struct {
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
+type Task struct {
+	TransactionUUID *string `json:"transactionUuid,omitempty"`
+	Title           string  `json:"title"`
+	Comment         *string `json:"comment,omitempty"`
+	Priority        int32   `json:"priority"`
+	StartDate       *string `json:"startDate,omitempty"`
+	Complete        bool    `json:"complete"`
+	CreatedAt       string  `json:"createdAt"`
+	UpdatedAt       string  `json:"updatedAt"`
+}
+
+type TaskOperationResult struct {
+	Status string `json:"status"`
+}
+
+type UpsertTaskInput struct {
+	TransactionUUID *string `json:"transactionUuid,omitempty"`
+	Title           string  `json:"title"`
+	Comment         *string `json:"comment,omitempty"`
+	Priority        int32   `json:"priority"`
+	StartDate       *string `json:"startDate,omitempty"`
+	Complete        bool    `json:"complete"`
 }

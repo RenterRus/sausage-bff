@@ -13,8 +13,12 @@ type Server struct {
 	Port int    `validate:"required"`
 }
 
+type Services struct {
+	Tasks Server
+}
 type Config struct {
-	Server Server `validate:"required"`
+	Server   Server   `validate:"required"`
+	Services Services `validate:"required"`
 }
 
 func ReadConfig(path string, fileName string) (*Config, error) {

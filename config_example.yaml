@@ -1,3 +1,8 @@
 server:
     host: "127.0.0.1"
     port: 8888
+
+services:
+    tasks:
+        host: "127.0.0.1"
+        port: 8889

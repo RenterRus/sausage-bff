@@ -1,17 +1,58 @@
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
+# ═══════════════════════════════════════════════════════════
+# Типы данных (модели)
+# ═══════════════════════════════════════════════════════════
+
+type Profile {
+  login: String
 }
+
+type Task {
+  transactionUuid: String
+  title:           String!
+  comment:         String
+  priority:        Int!
+  startDate:       DateTime
+  complete:        Boolean!
+  createdAt:       DateTime!
+  updatedAt:       DateTime!
+}
+
+# Универсальный тип ответа, повторяющий структуру proto-сообщений { status: string }
+type TaskOperationResult {
+  status: String!
+}
+
+input UpsertTaskInput {
+  transactionUuid: String
+  title:           String!
+  comment:         String
+  priority:        Int!
+  startDate:       DateTime
+  complete:        Boolean!
+}
+
+# ═══════════════════════════════════════════════════════════
+# Схемы (Query / Mutation)
+# ═══════════════════════════════════════════════════════════
 
 type Query {
-  todos: [Todo!]!
-}
-
-input NewTodo {
-  text: String!
+  # rpc SelectTasksByUser(SelectTasksRequest) returns (SelectTasksResponse);
+  selectTasksByUser(userId: String!): [Task!]!
+  getProfile: Profile!
 }
 
 type Mutation {
-  CreateTodo(input: NewTodo!): Todo!
+  # rpc UpsertTask(UpsertTaskRequest) returns (UpsertTaskResponse);
+  upsertTask(input: UpsertTaskInput!): TaskOperationResult!
+
+  # rpc DeleteTaskByUser(DeleteTaskRequest) returns (DeleteTaskResponse);
+  deleteTaskByUser(userId: String!, transactionUuid: String): TaskOperationResult!
+
+  # rpc SetCompleteStatus(SetCompleteStatusRequest) returns (SetCompleteStatusResponse);
+  setCompleteStatus(userId: String!, complete: Boolean, transactionUuid: String): TaskOperationResult!
 }
+
+# Примечание по скалярам:
+# DateTime должен быть реализован на бэкенде как Scalar (например, через Apollo/Graphene), 
+# мапящийся на ISO-8601 строку или timestamp int.
+scalar DateTime
