@@ -2,8 +2,8 @@ github.com/99designs/gqlgen v0.17.95 h1:882h7F5iJImgtyUVttc4MOK2NbzbMYc2oyNeHqkj
 github.com/99designs/gqlgen v0.17.95/go.mod h1:kHYPrpwOXDU1OQyxIg3Z7nVXSnlUoHVWBY7CMJCAM4M=
 github.com/AlekSi/pointer v1.2.0 h1:glcy/gc4h8HnG2Z3ZECSzZ1IX1x2JxRVuDzaJwQE0+w=
 github.com/AlekSi/pointer v1.2.0/go.mod h1:gZGfd3dpW4vEc/UlyfKKi1roIqcCgwOIvb0tSNSBle0=
-github.com/RenterRus/sausage-auth v0.0.0-20260901215843-87ddbdb57dec h1:gsVZXkvRhDH21cfDDHMg04irxUlgcpQXpYDRM0anZ0I=
-github.com/RenterRus/sausage-auth v0.0.0-20260901215843-87ddbdb57dec/go.mod h1:SrBwcWVDvPPZUrSZFZKIud9waOa5p8bXfoq1p7+XyBc=
+github.com/RenterRus/sausage-auth v0.0.0-20260911215505-5e279aa0a614 h1:1J2ar6GLE8+2TSHmxHIHLt88/ufF0q8nOQYd3O7teps=
+github.com/RenterRus/sausage-auth v0.0.0-20260911215505-5e279aa0a614/go.mod h1:SrBwcWVDvPPZUrSZFZKIud9waOa5p8bXfoq1p7+XyBc=
 github.com/RenterRus/sausage-tasks v0.0.0-20260904155738-d1f455b79a88 h1:gZtSyeRDapIRW3KAsSnoCr7AMo+bAVA8zQkLBDbjy8g=
 github.com/RenterRus/sausage-tasks v0.0.0-20260904155738-d1f455b79a88/go.mod h1:3EzXwYaXKnGhC4JDhlmFAQScmSlbgC0DvKxcz248ldg=
 github.com/agnivade/levenshtein v1.2.1 h1:EHBY3UOn1gwdy/VbFwgo4cxecRznFk7fKWN1KOX7eoM=

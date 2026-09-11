@@ -13,6 +13,22 @@ type auth struct {
 	client v1.AuthServiceClient
 }
 
+// UrlOTP implements AuthService.
+func (a *auth) UrlOTP(ctx context.Context, access *string) (string, error) {
+	if pointer.Get(access) == "" {
+		return "", fmt.Errorf("UrlOTP: %w", entity.ErrNoRequiredParams)
+	}
+
+	url, err := a.client.UrlOTP(ctx, &v1.UrlOTPRequest{
+		Access: *access,
+	})
+	if err != nil {
+		return "", fmt.Errorf("UrlOTP.UrlOTP: %w", err)
+	}
+
+	return url.GetUrl(), nil
+}
+
 func NewAuthController(client v1.AuthServiceClient) AuthService {
 	return &auth{
 		client: client,

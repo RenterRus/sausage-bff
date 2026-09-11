@@ -5,7 +5,7 @@ go 1.26
 require (
 	github.com/99designs/gqlgen v0.17.95
 	github.com/AlekSi/pointer v1.2.0
-	github.com/RenterRus/sausage-auth v0.0.0-20260901215843-87ddbdb57dec
+	github.com/RenterRus/sausage-auth v0.0.0-20260911215505-5e279aa0a614
 	github.com/RenterRus/sausage-tasks v0.0.0-20260904155738-d1f455b79a88
 	github.com/go-playground/validator/v10 v10.30.4
 	github.com/labstack/gommon v0.5.0
