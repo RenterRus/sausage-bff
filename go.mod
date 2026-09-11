@@ -4,6 +4,8 @@ go 1.26
 
 require (
 	github.com/99designs/gqlgen v0.17.95
+	github.com/AlekSi/pointer v1.2.0
+	github.com/RenterRus/sausage-auth v0.0.0-20260901215843-87ddbdb57dec
 	github.com/RenterRus/sausage-tasks v0.0.0-20260904155738-d1f455b79a88
 	github.com/go-playground/validator/v10 v10.30.4
 	github.com/labstack/gommon v0.5.0
@@ -42,7 +44,7 @@ require (
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.41.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260831171406-18b4a7587f8a // indirect
-	google.golang.org/grpc v1.83.2 // indirect
-	google.golang.org/protobuf v1.36.12 // indirect
+	google.golang.org/grpc v1.83.2
+	google.golang.org/protobuf v1.36.12
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

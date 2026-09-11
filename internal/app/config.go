@@ -15,6 +15,7 @@ type Server struct {
 
 type Services struct {
 	Tasks Server
+	Auth  Server
 }
 type Config struct {
 	Server   Server   `validate:"required"`

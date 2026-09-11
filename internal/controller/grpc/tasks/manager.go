@@ -10,8 +10,6 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// !!! Перевести tasks на cqrs
-
 type tasksManager struct {
 	client v1.TaskClient
 }

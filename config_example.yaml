@@ -6,3 +6,6 @@ services:
     tasks:
         host: "127.0.0.1"
         port: 8889
+    auth:
+        host: "127.0.0.1"
+        port: 8890

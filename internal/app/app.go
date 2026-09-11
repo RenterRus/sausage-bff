@@ -11,9 +11,12 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	authClient "github.com/RenterRus/sausage-auth/docs/proto/v1"
+	"github.com/RenterRus/sausage-bff/internal/controller/grpc/auth"
+	"github.com/RenterRus/sausage-bff/internal/controller/grpc/tasks"
 	general "github.com/RenterRus/sausage-bff/internal/graph/general"
 	"github.com/RenterRus/sausage-bff/internal/graph/general/generated"
-	tasks "github.com/RenterRus/sausage-tasks/docs/proto/v1"
+	tasksClient "github.com/RenterRus/sausage-tasks/docs/proto/v1"
 	"github.com/vektah/gqlparser/v2/ast"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -22,6 +25,7 @@ import (
 type App struct {
 	conf      *Config
 	tasksConn *grpc.ClientConn
+	authConn  *grpc.ClientConn
 }
 
 func NewApp(configPath string) (*App, error) {
@@ -57,8 +61,16 @@ func (a *App) Run() error {
 		return fmt.Errorf("tasksConn: %v", err)
 	}
 
-	tasksClient := tasks.NewTaskClient(a.tasksConn)
+	if a.authConn, err = grpc.NewClient(fmt.Sprintf("%s:%d", a.conf.Services.Auth.Host, a.conf.Services.Auth.Port),
+		grpc.WithTransportCredentials(insecure.NewCredentials())); err != nil {
+		return fmt.Errorf("authConn: %v", err)
+	}
+
+	tasksClient := tasks.NewTasksController(tasksClient.NewTaskClient(a.tasksConn))
 	_ = tasksClient
+
+	authClient := auth.NewAuthController(authClient.NewAuthServiceClient(a.authConn))
+	_ = authClient
 
 	srv := handler.New(generated.NewExecutableSchema(generated.Config{Resolvers: &general.Resolver{}}))
 
@@ -84,4 +96,5 @@ func (a *App) Run() error {
 
 func (a *App) Close() {
 	a.tasksConn.Close()
+	a.authConn.Close()
 }
